@@ -9,27 +9,18 @@
     <script th:src="@{/jquery.js}"></script>
 </head>
 
-<body th:class="escuro">
-    <div class="container">
-        <div class="row">
-
-            <div class="col-sm-12">
+<body class="escuro">
+     <div class="col-sm-12">
 
                 <header>
                     <h1 class="mt-6 text-center">Bem Vindo ao Game Library!</h1>
                     <div class="row">
-                        <h3 class="text-center">Faça seu Login!</h3>
+                        <h3 class="text-center">Faça seu Cadastro!</h3>
                     </div>
                 </header>
-
-
-
-            </div>
-        </div>
-
-        <div class=" linhaLogin row">
+                    <div class=" linhaLogin row">
             <div class="col-sm-5">
-                <form id="formLogin" th:object="${usuario}" th:action="@{/login}" method="POST">
+                <form id="formLogin" th:object="${usuario}" th:action="@{/cadastro}" method="POST">
                     <label for="inputLogin">Nome:</label>
                     <input id="inputLogin" type="text" class="form-control" placeholder="Digite seu Login"
                         th:field="*{nome}">
@@ -42,17 +33,17 @@
                                 <div class="col-sm-4">
                                     <button class="mt-2 btn btn-primary" style="width: 85px"
                                         type="submit">Logar</button>
+                                        </form>
                                 </div>
                                 <div class="divCadastro col-sm-8">
-                                    <p>Não possui Login? <a th:href="@{/cadastroUsuario}">Cadastre-se</a> </p>
+                                    <p>Já possui Login? <a th:href="@{/pagina-inicial}">Faça aqui!</a> </p>
                                 </div>
                             </div>
                         </div>
 
 
                     </div>
-                    <p th:if="${loginIncorreto}" style="font-weight:bold; color:red">Usuário ou senha incorretos</p>
-                </form>
+                
 
 
 
@@ -61,8 +52,8 @@
             </div>
         </div>
 
-    </div>
+
+
+            </div>
 
 </body>
-
-</html>
