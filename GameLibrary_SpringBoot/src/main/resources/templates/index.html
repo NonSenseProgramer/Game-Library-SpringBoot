@@ -9,7 +9,7 @@
     <script th:src="@{/jquery.js}"></script>
 </head>
 
-<body>
+<body th:class="escuro">
     <div class="container">
         <div class="row">
 
@@ -28,15 +28,19 @@
 
         <div class="row">
             <div class="col-sm-8">
-                <form th:object="${usuario}" th:action="@{/login}" method="POST">
+                <form id="formLogin" th:object="${usuario}" th:action="@{/login}" method="POST">
                     <label for="inputLogin">Nome:</label>
                     <input id="inputLogin" type="text" class="form-control" placeholder="Digite seu Login"
                         th:field="*{nome}">
                     <label for="inputSenha">Senha:</label>
-                    <input id="inputSenha" type="text" class="form-control" placeholder="Digite seu Login"
-                        th:field="*{nome}">
+                    <input id="inputSenha" type="password" class="form-control" placeholder="Digite sua Senha"
+                        th:field="*{senha}">
+                    <button class="mt-2 btn btn-primary" style="width: 85px" type="submit">Logar</button>
+                    <p th:if="${loginIncorreto}" style="font-weight:bold; color:red">Usuário ou senha incorretos</p>
                 </form>
-                <p th:if="${loginIncorreto}" style="color:red">Usuário ou senha incorretos</p>
+
+
+
 
             </div>
         </div>

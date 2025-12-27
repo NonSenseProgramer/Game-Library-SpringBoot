@@ -35,5 +35,10 @@ public class AuthTokenService {
         cookie.setPath("/");
         return cookie;
     }
+    public void salvarAuthToken(AuthToken authToken)
+    {
+         System.out.println("Salvando");
+authTokenRepo.save(authToken);
+    }
 
 }
