@@ -10,15 +10,15 @@
 </head>
 
 <body class="escuro">
-     <div class="col-sm-12">
+    <div class="col-sm-12">
 
-                <header>
-                    <h1 class="mt-6 text-center">Bem Vindo ao Game Library!</h1>
-                    <div class="row">
-                        <h3 class="text-center">Faça seu Cadastro!</h3>
-                    </div>
-                </header>
-                    <div class=" linhaLogin row">
+        <header>
+            <h1 class="mt-6 text-center">Bem Vindo ao Game Library!</h1>
+            <div class="row">
+                <h3 class="text-center">Faça seu Cadastro!</h3>
+            </div>
+        </header>
+        <div class=" linhaLogin row">
             <div class="col-sm-5">
                 <form id="formLogin" th:object="${usuario}" th:action="@{/cadastro}" method="POST">
                     <label for="inputLogin">Nome:</label>
@@ -31,29 +31,41 @@
                         <div class="col-sm-7">
                             <div class="col-sm-12">
                                 <div class="col-sm-4">
-                                    <button class="mt-2 btn btn-primary" style="width: 85px"
+                                    <button class="mt-2 btn btn-primary botaoCadastro" style="width: 85px"
                                         type="submit">Logar</button>
-                                        </form>
-                                </div>
-                                <div class="divCadastro col-sm-8">
-                                    <p>Já possui Login? <a th:href="@{/pagina-inicial}">Faça aqui!</a> </p>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-                
-
-
-
-
-
+                </form>
+            </div>
+            <div class="divCadastro col-sm-8">
+                <p>Já possui Login? <a th:href="@{/pagina-inicial}">Faça aqui!</a> </p>
             </div>
         </div>
+    </div>
+
+
+    </div>
 
 
 
-            </div>
+
+
+
+    </div>
+    </div>
+
+
+
+    </div>
 
 </body>
+<script>
+    $('.botaoCadastro').on("click", function () {
+        if ($('#inputSenha').val().trim() === "") {
+alert("Senha não pode ser vazia")
+        }
+        if ($('#inputLogin').val().trim() === "") {
+alert("Nome não pode ser vazio")
+        }
+    }
+    )
+
+</script>

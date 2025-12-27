@@ -19,6 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class GameLibraryController {
@@ -27,26 +30,19 @@ public class GameLibraryController {
     @Autowired
     UsuarioService usuarioService;
 
+    
+
     @GetMapping("/pagina-inicial")
     public String mostraPaginaInicial(
-            Model model,
-            @CookieValue(value = "AUTH", required = false) String token,
-            HttpServletResponse response) {
-        // Checa cookie de autenticação
-        if (token != null) {
-            Cookie cookie = authTokenService.renovaCookie(token);
+            Model model) 
+            {
+    model.addAttribute("usuario", new Usuario());
+    return "index";}
 
-            if (cookie != null && cookie.getMaxAge() > 0) {
-                response.addCookie(cookie);
-                return "redirect:/paginaServicos";
-            }
-            if (cookie != null && cookie.getMaxAge() == 0) {
-                response.addCookie(cookie);
-            }
-        }
-        // Usado caso o usuário não tenha um cookie válido/já expirado
+    @GetMapping("/cadastroUsuario")
+    public String mostraPaginaCadastro(Model model) {
         model.addAttribute("usuario", new Usuario());
-        return "index"; 
+        return "cadastroUsuario";
     }
 
     @GetMapping("/paginaServicos")
@@ -58,6 +54,7 @@ public class GameLibraryController {
         return new String();
     }
 
+    // --------------- LOGIN E CADASTRO ---------------
     @PostMapping("/login")
     public String autenticaLogin(@ModelAttribute Usuario usuario, Model model, HttpServletResponse response) {
         usuario = usuarioService.autenticaUsuario(usuario.getNome(), usuario.getSenha());
@@ -66,6 +63,25 @@ public class GameLibraryController {
             return "index";
         }
 
+        Cookie cookieAutenticacao = criaCookie(usuario);
+        response.addCookie(cookieAutenticacao);
+
+        return "redirect:/paginaServicos";
+    }
+
+    @PostMapping("/cadastro")
+    public String cadastrarUsuario(@ModelAttribute Usuario usuario, Model model, HttpServletResponse response) {
+        usuario = usuarioService.cadastraUsuario(usuario);
+        if (usuario == null) {
+            return null;
+        }
+        Cookie cookie = criaCookie(usuario);
+        response.addCookie(cookie);
+
+        return "redirect:/paginaServicos";
+    }
+
+    public Cookie criaCookie(Usuario usuario) {
         String token = UUID.randomUUID().toString();
         Cookie cookieAutenticacao = new Cookie("AUTH", token);
         cookieAutenticacao.setHttpOnly(true);
@@ -76,10 +92,7 @@ public class GameLibraryController {
         authToken.setToken(token);
         authToken.setUsuario(usuario);
         authTokenService.salvarAuthToken(authToken);
-
-        response.addCookie(cookieAutenticacao);
-
-        return "redirect:/paginaServicos";
+        return cookieAutenticacao;
     }
-
 }
+
