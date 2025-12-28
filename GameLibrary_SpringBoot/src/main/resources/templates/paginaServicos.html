@@ -19,28 +19,29 @@
         </div>
     </div>
     <div class="opcoes">
-        <form>
+        <form th:action = "@{/registroJogo}">
             <button class="btn btn-primary mt-2">Registrar Jogo</button>
         </form>
-        <form>
+        <form th:action = "@{/verJogos}">
             <button class="btn btn-primary mt-2">Ver Jogos Registrados</button>
         </form>
-        <form>
+        <form th:action = "@{/editarRegistros}">
             <button class="btn btn-primary mt-2">Editar Registro</button>
         </form>
-        <form class="registroJogo"><button class="btn btn-primary mt-2">Registrar Jogo</button>
+        <form th:action = "@{/cadastrarjogo}" class="cadastroJogo"><button class="btn btn-primary mt-2">Cadastrar novo Jogo</button>
         </form>
 
     </div>
 
 </body>
 <script th:inline="javascript">
+     $('.cadastroJogo').hide();
     $(document).ready(function () {
-        $('.registroJogo').hide();
+       
         const usuario = /*[[${usuario}]]*/ {};
         if(usuario.tipo_user === "ADM")
         {
-            $('.registroJogo').slideUp();
+            $('.cadastroJogo').show();
         }
     });
 

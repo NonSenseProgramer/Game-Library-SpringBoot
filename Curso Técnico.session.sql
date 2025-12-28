@@ -1,1 +1,1 @@
-SELECT * FROM tokens_autorizacao
+select * from jogos

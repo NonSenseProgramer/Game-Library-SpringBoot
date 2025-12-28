@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.senac.GameLibrary_SpringBoot.data.AuthToken;
+import com.senac.GameLibrary_SpringBoot.data.Jogo;
 import com.senac.GameLibrary_SpringBoot.data.Usuario;
 import com.senac.GameLibrary_SpringBoot.service.*;
 
@@ -20,7 +21,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @Controller
 public class GameLibraryController {
     @Autowired
@@ -28,14 +28,12 @@ public class GameLibraryController {
     @Autowired
     UsuarioService usuarioService;
 
-    
-
     @GetMapping("/pagina-inicial")
     public String mostraPaginaInicial(
-            Model model) 
-            {
-    model.addAttribute("usuario", new Usuario());
-    return "index";}
+            Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "index";
+    }
 
     @GetMapping("/cadastroUsuario")
     public String mostraPaginaCadastro(Model model) {
@@ -45,16 +43,22 @@ public class GameLibraryController {
 
     @GetMapping("/paginaServicos")
     public String mostraPaginaServicos(Model model, @CookieValue(value = "AUTH", required = true) String token) {
-Usuario usuario = authTokenService.getUsuarioPorCookie(token);
-if (usuario == null) {
-    return "redirect:/pagina-inicial";
-}
-model.addAttribute("usuario",usuario);
+        Usuario usuario = authTokenService.getUsuarioPorCookie(token);
+        if (usuario == null) {
+            return "redirect:/pagina-inicial";
+        }
+        model.addAttribute("usuario", usuario);
         return "paginaServicos";
     }
 
     public String getMethodName(@RequestParam String param) {
         return new String();
+    }
+
+    // --------------- GETTERS PÁGINAS DE SERVIÇO ---------------
+    @GetMapping("/registroJogo")
+    public String mostraPaginaRegistroJogo(Model model) {
+        model.addAttribute("jogo", new Jogo());
     }
 
     // --------------- LOGIN E CADASTRO ---------------
@@ -99,4 +103,3 @@ model.addAttribute("usuario",usuario);
         return cookieAutenticacao;
     }
 }
-
