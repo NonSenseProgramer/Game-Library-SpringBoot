@@ -27,18 +27,18 @@ public class UsuarioService {
     }
 
     public Usuario cadastraUsuario(Usuario usuario) {
-        Usuario usuarioCadastro = usuarioRepo.findByNome(usuario.getNome());
-        if (!(usuarioCadastro == null ||
-                usuario.getNome().isBlank() ||
-                usuario.getSenha().isBlank())) {
+
+        if (usuario.getNome().isBlank() || usuario.getSenha().isBlank()) {
             return null;
         }
-        ;
 
-        String senha = BCrypt.hashpw(usuario.getSenha(), BCrypt.gensalt());
-        usuario.setSenha(senha);
+        if (usuarioRepo.findByNome(usuario.getNome()) != null) {
+            return null;
+        }
+
+        usuario.setSenha(BCrypt.hashpw(usuario.getSenha(), BCrypt.gensalt()));
+        usuario.setTipo_user("user");
         return usuarioRepo.save(usuario);
-
     }
 
 }

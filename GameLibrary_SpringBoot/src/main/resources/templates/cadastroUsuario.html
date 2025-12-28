@@ -21,6 +21,8 @@
         <div class=" linhaLogin row">
             <div class="col-sm-5">
                 <form id="formLogin" th:object="${usuario}" th:action="@{/cadastro}" method="POST">
+                    <span th:if="${usuarioJaExiste}">
+                    <p style="color:red"><strong>Já existe um usuário com este nome, escolha outro</strong></p></span>
                     <label for="inputLogin">Nome:</label>
                     <input id="inputLogin" type="text" class="form-control" placeholder="Digite seu Login"
                         th:field="*{nome}">
@@ -31,39 +33,29 @@
                         <div class="col-sm-7">
                             <div class="col-sm-12">
                                 <div class="col-sm-4">
-                                    <button class="mt-2 btn btn-primary botaoCadastro" style="width: 85px"
-                                        type="submit">Logar</button>
+                                    <button class="mt-2 btn btn-primary botaoCadastro" style="width: 115px"
+                                        type="submit">Cadastrar-se</button>
                 </form>
+
             </div>
             <div class="divCadastro col-sm-8">
                 <p>Já possui Login? <a th:href="@{/pagina-inicial}">Faça aqui!</a> </p>
             </div>
         </div>
     </div>
-
-
-    </div>
-
-
-
-
-
-
     </div>
     </div>
-
-
-
+    </div>
     </div>
 
 </body>
 <script>
     $('.botaoCadastro').on("click", function () {
         if ($('#inputSenha').val().trim() === "") {
-alert("Senha não pode ser vazia")
+            alert("Senha não pode ser vazia")
         }
         if ($('#inputLogin').val().trim() === "") {
-alert("Nome não pode ser vazio")
+            alert("Nome não pode ser vazio")
         }
     }
     )
