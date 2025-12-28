@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -43,7 +44,12 @@ public class GameLibraryController {
     }
 
     @GetMapping("/paginaServicos")
-    public String mostraPaginaServicos() {
+    public String mostraPaginaServicos(Model model, @CookieValue(value = "AUTH", required = true) String token) {
+Usuario usuario = authTokenService.getUsuarioPorCookie(token);
+if (usuario == null) {
+    return "redirect:/pagina-inicial";
+}
+model.addAttribute("usuario",usuario);
         return "paginaServicos";
     }
 

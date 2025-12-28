@@ -5,13 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Página Inicial</title>
     <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <link th:href="@{/css/tema.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/tema.css}" rel="stylesheet" type="text/css" />
     <script th:src="@{/jquery.js}"></script>
 </head>
 
-<body th:class = "escuro">
-   <h1>Teste</h1>
+<body th:class="escuro">
+    <div class="row">
+        <div class="col-sm-8">
+            <h1 th:text="'Bem-vindo ' + ${usuario.nome}"></h1>
+            <div class="col-sm-6">
+                <h3 class="lead" th:text="'Seu nivel de acesso é de ' + ${usuario.tipo_user}"></h3>
+            </div>
+        </div>
+    </div>
+    <div class="opcoes">
+        <form>
+            <button class="btn btn-primary mt-2">Registrar Jogo</button>
+        </form>
+        <form>
+            <button class="btn btn-primary mt-2">Ver Jogos Registrados</button>
+        </form>
+        <form>
+            <button class="btn btn-primary mt-2">Editar Registro</button>
+        </form>
+        <form class="registroJogo"><button class="btn btn-primary mt-2">Registrar Jogo</button>
+        </form>
+
+    </div>
 
 </body>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('.registroJogo').hide();
+        const usuario = /*[[${usuario}]]*/ {};
+        if(usuario.tipo_user === "ADM")
+        {
+            $('.registroJogo').slideUp();
+        }
+    });
+
+</script>
 
 </html>
