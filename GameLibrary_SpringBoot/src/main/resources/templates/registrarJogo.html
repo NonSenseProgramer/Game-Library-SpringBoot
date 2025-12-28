@@ -8,9 +8,29 @@
     <link th:href="@{/css/indexCSS.css}" rel="stylesheet" type="text/css" />
     <script th:src="@{/jquery.js}"></script>
 </head>
-<h1>Registrar Jogo</h1>
-<form>
-<input type = "text" id = "nomeJogo" placeholder="Insira qui o nome do Jogo">
 
-</form>
+<body th:class="escuro">
+    <h1>Registrar Jogo</h1>
+    <form th:object="${registro}" th:action="@{/registroJogo}" method="POST">
+        <label for="nomeJogo">Nome do Jogo:</label>
+         <div th:if="${jogoInexistente}">
+            <p style="color:red"><strong>Jogo inexistente na base de Dados</strong></p>
+        </div>
+         <div th:if="${sucesso}">
+            <p style="color:rgb(2, 253, 115)"><strong>Jogo adicionado com sucesso</strong></p>
+        </div>
+        <input class="form-control" th:field="*{nomeJogo}" type="text" id="nomeJogo"
+            placeholder="Insira qui o nome do Jogo">
+        <label for="comboBox">Status: </label>
+        <select class="form-select" id="comboBox" th:field="*{status}">
+            <option value="" disabled hidden>Selecione o Status de conclusão</option>
+            <option value="Iniciando">Iniciando</option>
+            <option value="Jogando">Jogando</option>
+            <option value="Finalizando">Finalizado</option>
+        </select>
+        <button type="submit" class="btn btn-primary mt-4">Registrar</button>
+    </form>
+
+</body>
+
 </html>

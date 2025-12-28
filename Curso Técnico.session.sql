@@ -1,1 +1,1 @@
-select * from jogos
+select * from jogos_jogados

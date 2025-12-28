@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.senac.GameLibrary_SpringBoot.data.AuthToken;
 import com.senac.GameLibrary_SpringBoot.data.Jogo;
+import com.senac.GameLibrary_SpringBoot.data.JogosJogadosId;
+import com.senac.GameLibrary_SpringBoot.data.RegistroJogoDTO;
 import com.senac.GameLibrary_SpringBoot.data.Usuario;
+import com.senac.GameLibrary_SpringBoot.data.jogoJogado;
 import com.senac.GameLibrary_SpringBoot.service.*;
 
 import jakarta.servlet.http.Cookie;
@@ -20,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class GameLibraryController {
@@ -27,6 +31,10 @@ public class GameLibraryController {
     AuthTokenService authTokenService;
     @Autowired
     UsuarioService usuarioService;
+    @Autowired
+    JogoService jogoService;
+    @Autowired
+    JogoJogadoService jogoJogadoService;
 
     @GetMapping("/pagina-inicial")
     public String mostraPaginaInicial(
@@ -51,14 +59,39 @@ public class GameLibraryController {
         return "paginaServicos";
     }
 
-    public String getMethodName(@RequestParam String param) {
-        return new String();
-    }
-
-    // --------------- GETTERS PÁGINAS DE SERVIÇO ---------------
+    // --------------- GET PÁGINAS DE SERVIÇO ---------------
     @GetMapping("/registroJogo")
     public String mostraPaginaRegistroJogo(Model model) {
-        model.addAttribute("jogo", new Jogo());
+        model.addAttribute("registro", new RegistroJogoDTO());
+        return "registrarJogo";
+    }
+
+    // --------------- POST PÁGINAS DE SERVIÇO ---------------
+    @PostMapping("/registroJogo")
+    public String fazRegistroJogoJogado(@ModelAttribute RegistroJogoDTO registro, Model model,
+            @CookieValue(value = "AUTH", required = true) String token) {
+        jogoJogado jogoJogado = new jogoJogado();
+        Jogo jogo = jogoService.retornaJogoPorNome(registro.nomeJogo);
+        if (jogo == null) {
+            model.addAttribute("jogoInexistente", true);
+           
+            return "registrarJogo";
+        }
+
+        jogoJogado.setJogo(jogo);
+        jogoJogado.setStatus(registro.status);
+        Usuario usuario = authTokenService.getUsuarioPorCookie(token);
+        JogosJogadosId jogadoId = new JogosJogadosId();
+
+        jogadoId.setUserId(usuario.getId());
+        jogadoId.setJogoId(jogo.getId());
+
+        jogoJogado.setId(jogadoId);
+        jogoJogado.setUsuario(usuario);
+        jogoJogadoService.salvarJogoJogado(jogoJogado);
+        model.addAttribute("sucesso", true);
+         model.addAttribute("registro", registro);
+        return "registrarJogo";
     }
 
     // --------------- LOGIN E CADASTRO ---------------
