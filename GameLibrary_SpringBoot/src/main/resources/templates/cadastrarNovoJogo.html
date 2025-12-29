@@ -1,0 +1,30 @@
+<html xmlns="w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Página Inicial</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link th:href="@{/css/tema.css}" rel="stylesheet" type="text/css" />
+    <script th:src="@{/jquery.js}"></script>
+</head>
+<header>
+    <h1>Bem vindo a tela de adicionar jogos</h1>
+</header>
+
+<body class="escuro">
+    <form th:action="@{/cadastrarJogo}" th:object="${DTO}" method="POST">
+        <label for="inputJogo">Nome do Jogo:</label>
+        <input id="inputJogo" th:field="*{jogo}" type="text" placeholder="nome do jogo aqui" class="form-control">
+        <label for="selectGenero">Gênero so jogo:</label>
+        <select class="form-select" id="selectGenero">
+            <option value="" disabled selected hidden>Selecione um genero</option>
+            <option th:each="genero : ${DTO.generos}" th:field="*{genero}" th:text="${genero}"></option>
+        </select>
+        <label for="dataLancamento">Data de lançamento</label>
+        <input id="dataLancamento" th:field="*{dataLancamento}" class="form-control" type="date">
+        <button type="submit" class="btn btn-danger">Adicionar</button>
+    </form>
+</body>
+
+</html>

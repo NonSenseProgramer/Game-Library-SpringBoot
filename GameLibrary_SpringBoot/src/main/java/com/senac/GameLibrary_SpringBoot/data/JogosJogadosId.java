@@ -1,6 +1,7 @@
 package com.senac.GameLibrary_SpringBoot.data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Embeddable;
@@ -19,7 +20,10 @@ public class JogosJogadosId implements Serializable {
     private Long userId;
     private Long jogoId;
 
-    public JogosJogadosId() {}
+
+
+    public JogosJogadosId() {
+    }
 
     public JogosJogadosId(Long userId, Long jogoId) {
         this.userId = userId;
@@ -36,13 +40,17 @@ public class JogosJogadosId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         JogosJogadosId that = (JogosJogadosId) o;
 
         return Objects.equals(userId, that.userId)
-            && Objects.equals(jogoId, that.jogoId);
+                && Objects.equals(jogoId, that.jogoId);
     }
 
     @Override
@@ -50,5 +58,3 @@ public class JogosJogadosId implements Serializable {
         return Objects.hash(userId, jogoId);
     }
 }
-
-

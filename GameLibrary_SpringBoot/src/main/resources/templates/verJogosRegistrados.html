@@ -1,0 +1,113 @@
+<html xmlns="w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Página Inicial</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link th:href="@{/css/indexCSS.css}" rel="stylesheet" type="text/css" />
+    <script th:src="@{/jquery.js}"></script>
+</head>
+
+<body class="escuro">
+
+    <h1 th:if="${nenhumJogo}" style="color:red">Você ainda não jogou nenhum jogo</h1>
+    <table th:unless="${nenhumJogo}" class="col-sm-10 tabelaJogos table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+
+            <tr>
+                <th>usuario</th>
+                <th>jogo</th>
+                <th>status</th>
+                <th>Data Jogada</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr th:each="DTO : ${listDTO}">
+
+                <td th:text="${DTO.usuario.nome}"></td>
+                <td th:text="${DTO.jogosJogados.jogo.jogo}"></td>
+                <td th:text="${DTO.jogosJogados.status}"></td>
+                <td th:text="${DTO.jogosJogados.dataJogada}"></td>
+
+            </tr>
+
+        </tbody>
+
+
+    </table>
+    <div class="editarRegistro">
+
+        <h2>Edite seu Registro</h2>
+        <form class="formEditar">
+            <label for="novoJogo">Nome do jogo
+            </label>
+            <input type="text" id="novoJogo" class="form-control">
+            <label for="novoStatus">Novo Status
+                (deixar em branco se quiser manter o mesmo)
+            </label>
+            <select id="novoStatus" class="form-select">
+                <option value="" disabled selected hidden>Selecione o Status de conclusão</option>
+                <option value="Iniciando">Iniciando</option>
+                <option value="Jogando">Jogando</option>
+                <option value="Finalizando">Finalizado</option>
+            </select>
+            <button type="button" class="botaoEditar btn btn-primary">Editar Registro</button>
+        </form>
+
+    </div>
+
+</body>
+
+<script>
+
+
+    $('.editarRegistro').hide();
+    $('.tabelaJogos tr').not(':first').on("click", function () {
+        $('.editarRegistro').slideToggle();
+        $('.botaoEditar').on("click", function () {
+
+            let tr = $(this).closest('tr');
+            let nomeJogo = tr.find('td:eq(1)').text();
+            let jogoNovo = $('#novoJogo').val().trim();
+            let status = $('#novoStatus').val().trim();
+            if (status === "") {
+                status = tr.find('td:eq(2)').text();
+            }
+
+
+            if ($('#novoStatus').val().trim() === "" && $('#novoJogo').val().trim() === "") {
+                alert("Edite pelo menos uma coisa!");
+                return;
+            }
+            if (jogoNovo === "") {
+                jogoNovo = nomeJogo;
+                
+            }
+
+            $.ajax({
+                
+                data: JSON.stringify({
+                    jogoVelho: nomeJogo,
+                    jogoNovo: jogoNovo,
+                    novoStatus: status
+                }),
+                contentType: 'application/json',
+                url: '/atualizarRegistro',
+                type: 'PUT',
+                success: function (result) {
+                    alert("Jogo/Status atualizado com sucesso!");
+                },
+                error: function (error) {
+                    alert("Erro ao atualizar o jogo: " + error.responseText);
+                }
+            });
+
+        });
+
+    }
+    )
+</script>
+
+</html>

@@ -40,5 +40,9 @@ public class UsuarioService {
         usuario.setTipo_user("user");
         return usuarioRepo.save(usuario);
     }
+    public Usuario retornaUsuarioPorNome(String nome)
+    {
+        return usuarioRepo.findByNome(nome);
+    }
 
 }

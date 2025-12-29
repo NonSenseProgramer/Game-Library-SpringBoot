@@ -1,5 +1,7 @@
 package com.senac.GameLibrary_SpringBoot.data;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -9,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "jogos_jogados")
-public class jogoJogado {
+public class JogoJogado {
     @EmbeddedId
     private JogosJogadosId id;
     @ManyToOne
@@ -23,6 +25,15 @@ public class jogoJogado {
     private Jogo jogo;
 
     private String status;
+    private LocalDate dataJogada;
+    
+    public LocalDate getDataJogada() {
+        return dataJogada;
+    }
+
+    public void setDataJogada(LocalDate dataJogada) {
+        this.dataJogada = dataJogada;
+    }
 
     public JogosJogadosId getId() {
         return id;

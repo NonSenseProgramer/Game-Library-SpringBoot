@@ -1,9 +1,13 @@
 package com.senac.GameLibrary_SpringBoot.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -11,11 +15,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.senac.GameLibrary_SpringBoot.data.AuthToken;
+import com.senac.GameLibrary_SpringBoot.data.DTOAddJogo;
+import com.senac.GameLibrary_SpringBoot.data.DTOEditarRegistro;
+import com.senac.GameLibrary_SpringBoot.data.DTOTabela;
 import com.senac.GameLibrary_SpringBoot.data.Jogo;
 import com.senac.GameLibrary_SpringBoot.data.JogosJogadosId;
 import com.senac.GameLibrary_SpringBoot.data.RegistroJogoDTO;
 import com.senac.GameLibrary_SpringBoot.data.Usuario;
-import com.senac.GameLibrary_SpringBoot.data.jogoJogado;
+import com.senac.GameLibrary_SpringBoot.data.JogoJogado;
 import com.senac.GameLibrary_SpringBoot.service.*;
 
 import jakarta.servlet.http.Cookie;
@@ -24,6 +31,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class GameLibraryController {
@@ -66,15 +75,76 @@ public class GameLibraryController {
         return "registrarJogo";
     }
 
+    @GetMapping("/registroJogos")
+    public String mostraRegistroJogos(Model model, @CookieValue(value = "AUTH", required = true) String token) {
+        Usuario usuario = authTokenService.getUsuarioPorCookie(token);
+        if (usuario == null) {
+            return "redirect:/pagina-inicial";
+        }
+        List<DTOTabela> listaTabela = new ArrayList<>();
+        List<JogoJogado> jogosJogados = jogoJogadoService.retornaJogosUsuario(usuario);
+        if (jogosJogados.isEmpty()) {
+            model.addAttribute("nenhumJogo", true);
+            return "verJogosRegistrados";
+        }
+        for (int i = 0; i < jogosJogados.size(); i++) {
+            DTOTabela dto = new DTOTabela();
+            dto.setUsuario(usuario);
+            dto.setJogosJogados(jogosJogados.get(i));
+            listaTabela.add(dto);
+
+        }
+        model.addAttribute("listDTO", listaTabela);
+        return "verJogosRegistrados";
+
+    }
+
+    @GetMapping("/cadastrarJogo")
+    public String mostraTelaADDJogo(@CookieValue(value = "AUTH", required = true) String token, Model model) {
+        Usuario usuario = authTokenService.getUsuarioPorCookie(token);
+        if (!usuario.getTipo_user().equals("ADM")) {
+
+            return null;
+        }
+        List<String> generos = List.of(
+    "Ação",
+    "Aventura",
+    "RPG",
+    "Tiro",
+    "Estratégia",
+    "Esportes",
+    "Corrida",
+    "Simulação",
+    "Luta",
+    "Plataforma",
+    "Puzzle",
+    "Survival",
+    "Horror",
+    "MMORPG",
+    "Battle Royale",
+    "Música/Ritmo",
+    "Sandbox",
+    "Stealth",
+    "Visual Novel",
+    "MOBA"
+);
+DTOAddJogo DTO = new DTOAddJogo();
+DTO.setGeneros(generos);
+model.addAttribute("DTO", DTO);
+
+        return "cadastrarNovoJogo";
+
+    }
+
     // --------------- POST PÁGINAS DE SERVIÇO ---------------
     @PostMapping("/registroJogo")
     public String fazRegistroJogoJogado(@ModelAttribute RegistroJogoDTO registro, Model model,
             @CookieValue(value = "AUTH", required = true) String token) {
-        jogoJogado jogoJogado = new jogoJogado();
+        JogoJogado jogoJogado = new JogoJogado();
         Jogo jogo = jogoService.retornaJogoPorNome(registro.nomeJogo);
         if (jogo == null) {
             model.addAttribute("jogoInexistente", true);
-           
+
             return "registrarJogo";
         }
 
@@ -88,10 +158,23 @@ public class GameLibraryController {
 
         jogoJogado.setId(jogadoId);
         jogoJogado.setUsuario(usuario);
+        jogoJogado.setDataJogada(LocalDate.now());
         jogoJogadoService.salvarJogoJogado(jogoJogado);
         model.addAttribute("sucesso", true);
-         model.addAttribute("registro", registro);
+        model.addAttribute("registro", registro);
         return "registrarJogo";
+    }
+     @PostMapping("/cadastrarJogo")
+    public String processaNovoCadastro(@ModelAttribute DTOAddJogo DTO, Model model) {
+        Jogo jogo = jogoService.criaJogo(DTO.getJogo(), DTO.getGenero() ,DTO.getDataLancamento());
+        if(jogo == null)
+            {
+                model.addAttribute("jogoExistente", true);
+                return "cadastrarNovoJogo";
+            }
+            model.addAttribute("sucesso", true);
+        
+        return "cadastrarNovoJogo";
     }
 
     // --------------- LOGIN E CADASTRO ---------------
@@ -120,6 +203,33 @@ public class GameLibraryController {
         response.addCookie(cookie);
 
         return "redirect:/paginaServicos";
+    }
+   
+    
+    // --------------- UPDATE ----------------
+
+    @PutMapping("/atualizarRegistro")
+    public ResponseEntity<?> atualizarRegistro(@RequestBody DTOEditarRegistro dto,
+            @CookieValue(value = "AUTH", required = true) String token) {
+
+        Jogo jogo = jogoService.retornaJogoPorNome(dto.getJogoNovo());
+        if (jogo == null) {
+            System.out.println("Parou no primeiro " + dto.getJogoNovo());
+            return ResponseEntity.notFound().build();
+        }
+
+        Usuario usuario = authTokenService.getUsuarioPorCookie(token);
+        JogoJogado jogoJogado = jogoJogadoService.retornaJogoJogadoUsuarioJogo(usuario, jogo);
+        if (jogoJogado == null) {
+            System.out.println("Parou no segundo");
+
+            return ResponseEntity.notFound().build();
+        }
+        jogoJogado.setStatus(dto.getNovoStatus());
+        jogoJogado = jogoJogadoService.salvarJogoJogado(jogoJogado);
+        System.out.println("" + jogoJogado.getStatus() + jogoJogado.getDataJogada() + jogoJogado.getId()
+                + jogoJogado.getJogo().getJogo() + jogoJogado.getUsuario().getNome() + "");
+        return ResponseEntity.ok(jogoJogado);
     }
 
     public Cookie criaCookie(Usuario usuario) {
