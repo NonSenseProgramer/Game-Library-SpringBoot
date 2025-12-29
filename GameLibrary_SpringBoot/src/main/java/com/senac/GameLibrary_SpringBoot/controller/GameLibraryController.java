@@ -107,30 +107,29 @@ public class GameLibraryController {
             return null;
         }
         List<String> generos = List.of(
-    "Ação",
-    "Aventura",
-    "RPG",
-    "Tiro",
-    "Estratégia",
-    "Esportes",
-    "Corrida",
-    "Simulação",
-    "Luta",
-    "Plataforma",
-    "Puzzle",
-    "Survival",
-    "Horror",
-    "MMORPG",
-    "Battle Royale",
-    "Música/Ritmo",
-    "Sandbox",
-    "Stealth",
-    "Visual Novel",
-    "MOBA"
-);
-DTOAddJogo DTO = new DTOAddJogo();
-DTO.setGeneros(generos);
-model.addAttribute("DTO", DTO);
+                "Ação",
+                "Aventura",
+                "RPG",
+                "Tiro",
+                "Estratégia",
+                "Esportes",
+                "Corrida",
+                "Simulação",
+                "Luta",
+                "Plataforma",
+                "Puzzle",
+                "Survival",
+                "Horror",
+                "MMORPG",
+                "Battle Royale",
+                "Música/Ritmo",
+                "Sandbox",
+                "Stealth",
+                "Visual Novel",
+                "MOBA");
+        DTOAddJogo DTO = new DTOAddJogo();
+        DTO.setGeneros(generos);
+        model.addAttribute("DTO", DTO);
 
         return "cadastrarNovoJogo";
 
@@ -164,16 +163,41 @@ model.addAttribute("DTO", DTO);
         model.addAttribute("registro", registro);
         return "registrarJogo";
     }
-     @PostMapping("/cadastrarJogo")
+
+    @PostMapping("/cadastrarJogo")
     public String processaNovoCadastro(@ModelAttribute DTOAddJogo DTO, Model model) {
-        Jogo jogo = jogoService.criaJogo(DTO.getJogo(), DTO.getGenero() ,DTO.getDataLancamento());
-        if(jogo == null)
-            {
-                model.addAttribute("jogoExistente", true);
-                return "cadastrarNovoJogo";
-            }
-            model.addAttribute("sucesso", true);
-        
+        Jogo jogo = jogoService.criaJogo(DTO.getJogo(), DTO.getGenero(), DTO.getDataLancamento());
+        List<String> generos = List.of(
+                "Ação",
+                "Aventura",
+                "RPG",
+                "Tiro",
+                "Estratégia",
+                "Esportes",
+                "Corrida",
+                "Simulação",
+                "Luta",
+                "Plataforma",
+                "Puzzle",
+                "Survival",
+                "Horror",
+                "MMORPG",
+                "Battle Royale",
+                "Música/Ritmo",
+                "Sandbox",
+                "Stealth",
+                "Visual Novel",
+                "MOBA");
+        if (jogo == null) {
+            model.addAttribute("jogoExistente", true);
+            DTO.setGeneros(generos);
+            model.addAttribute("DTO", DTO);
+            return "cadastrarNovoJogo";
+        }
+        model.addAttribute("sucesso", true);
+        DTO.setGeneros(generos);
+        model.addAttribute("DTO", DTO);
+
         return "cadastrarNovoJogo";
     }
 
@@ -204,8 +228,7 @@ model.addAttribute("DTO", DTO);
 
         return "redirect:/paginaServicos";
     }
-   
-    
+
     // --------------- UPDATE ----------------
 
     @PutMapping("/atualizarRegistro")

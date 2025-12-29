@@ -19,12 +19,18 @@
         <label for="selectGenero">Gênero so jogo:</label>
         <select class="form-select" id="selectGenero">
             <option value="" disabled selected hidden>Selecione um genero</option>
-            <option th:each="genero : ${DTO.generos}" th:field="*{genero}" th:text="${genero}"></option>
+            <option th:each="genero : ${DTO.generos}" th:value="${genero}"  th:field="*{genero}" th:text="${genero}"></option>
         </select>
         <label for="dataLancamento">Data de lançamento</label>
         <input id="dataLancamento" th:field="*{dataLancamento}" class="form-control" type="date">
-        <button type="submit" class="btn btn-danger">Adicionar</button>
+        <button type="submit" class=" mt-2 btn btn-danger">Adicionar</button>
     </form>
+    <div th:if="${jogoExistente}">
+        <p style="color:red"><strong>Jogo Já existente na base de dados ou campo jogo em branco!</strong></p>
+    </div>
+    <div th:if="${sucesso}">
+ <p style="color:green"><strong>Jogo cadastrado com sucesso!</strong></p>
+    </div>
 </body>
 
 </html>

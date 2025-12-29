@@ -28,7 +28,7 @@ public class JogoService {
         if (jogo != null) {
             return null;
         }
-
+        jogo = new Jogo();
         jogo.setJogo(nomeJogo);
         jogo.setGenero(genero);
         jogo.setDataLancamento(dataLancamento);
